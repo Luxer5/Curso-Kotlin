@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="180dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Título de la tarjeta"
+        android:layout_margin="@dimen/common_padding_default"
+        android:textAppearance="?attr/textAppearanceHeadline5"/>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="email"
+        android:layout_marginTop="64dp"
+        android:layout_marginHorizontal="@dimen/common_padding_default"
+        app:endIconMode="clear_text"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textEmailAddress"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/card_btn_skip"
+        android:layout_gravity="end|bottom"
+        android:layout_marginEnd="@dimen/common_padding_min"
+        android:layout_marginBottom="@dimen/common_padding_min"
+        style="@style/Widget.MaterialComponents.Button.TextButton"/>
+
+</com.google.android.material.card.MaterialCardView>
