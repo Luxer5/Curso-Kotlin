@@ -1,0 +1,38 @@
+package com.cursokotlin.userssp
+
+import android.content.Context
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
+import com.cursokotlin.userssp.databinding.ItemsUserBinding
+
+class UserAdapter(private val users:List<User>) : RecyclerView.Adapter<UserAdapter.ViewHolder>() {
+
+    private lateinit var context: Context
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        context= parent.context
+
+        val view = LayoutInflater.from(context).inflate(R.layout.items_user, parent, false)
+
+        return ViewHolder(view)
+    }
+
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val user= users.get(position)
+
+        with(holder){
+            binding.tvOrder.text= user.id.toString()
+            binding.tvName.text= user.name
+        }
+    }
+
+    override fun getItemCount(): Int {
+        return users.size
+    }
+
+    inner class ViewHolder(view:View) : RecyclerView.ViewHolder(view){
+        val binding = ItemsUserBinding.bind(view)
+    }
+}

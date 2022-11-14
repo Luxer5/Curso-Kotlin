@@ -2,6 +2,7 @@ package com.cursokotlin.mdc
 
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
@@ -78,6 +79,8 @@ class ScrollingActivity : AppCompatActivity() {
                     loadImage(url)
                 }else {
                     binding.content.tilUrl.error= getString(R.string.card_invalid_url)
+                    Toast.makeText(this, " "+URLUtil.isValidUrl(url), Toast.LENGTH_SHORT).show()
+                    loadImage(url)
                }
             }
 
