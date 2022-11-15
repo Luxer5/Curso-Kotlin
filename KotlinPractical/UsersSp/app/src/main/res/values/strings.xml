@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Users Sp</string>
     <string name="description_user_phoo">Imagen del usuario</string>
+    <string name="sp_first_time">first_time</string>
+    <string name="dialog_tittle">Resgistro de usuario</string>
+    <string name="dialog_confirm">Registrar</string>
 </resources>
