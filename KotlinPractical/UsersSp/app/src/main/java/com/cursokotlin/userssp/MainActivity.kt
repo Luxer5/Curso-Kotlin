@@ -4,13 +4,14 @@ import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
+
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.cursokotlin.userssp.databinding.ActivityMainBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import java.text.FieldPosition
+import com.google.android.material.textfield.TextInputEditText
+
 
 class MainActivity : AppCompatActivity(), OnClickListener {
 
@@ -27,17 +28,29 @@ class MainActivity : AppCompatActivity(), OnClickListener {
         val preferences= getPreferences(Context.MODE_PRIVATE)
 
         val isFirstTime = preferences.getBoolean(getString(R.string.sp_first_time), true)
-        Log.i("SP", "${getString(R.string.sp_first_time)}= $isFirstTime")
+        Log.i("SP", "${getString(R.string.sp_first_time)} = $isFirstTime")
+
 
         if (isFirstTime) {
+            val dialogView= layoutInflater.inflate(R.layout.dialog_register, null)
             MaterialAlertDialogBuilder(this)
                 .setTitle(R.string.dialog_tittle)
-                .setPositiveButton(R.string.dialog_confirm, { dialogInterface, i ->
-                    preferences.edit().putBoolean(getString(R.string.sp_first_time), false).commit()
-                })
-                .setNegativeButton("Cancelar", null)
+                .setView(dialogView)
+                .setCancelable(false)
+                .setPositiveButton(R.string.dialog_confirm) { _, _ ->
+                    val username = dialogView.findViewById<TextInputEditText>(R.id.etUserName).text.toString()
+                    with(preferences.edit()){
+                        putBoolean(getString(R.string.sp_first_time), false)
+                        putString(getString(R.string.sp_username), username)
+                            .apply()
+                    }
+                    Toast.makeText(this, R.string.reguister_success, Toast.LENGTH_SHORT).show()
+                }
+                .setNeutralButton(R.string.dialog_invite, null)
                 .show()
-
+        } else{
+            val username = preferences.getString(getString(R.string.sp_username), getString(R.string.hint_username))
+            Toast.makeText(this, "Bienvenido: $username" , Toast.LENGTH_SHORT).show()
         }
 
         userAdapter = UserAdapter(getUsers(), this)

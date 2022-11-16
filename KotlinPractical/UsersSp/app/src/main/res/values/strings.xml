@@ -4,4 +4,9 @@
     <string name="sp_first_time">first_time</string>
     <string name="dialog_tittle">Resgistro de usuario</string>
     <string name="dialog_confirm">Registrar</string>
+    <string name="helper_username">Obligatorio</string>
+    <string name="hint_username">Nombre de usuario</string>
+    <string name="sp_username">username</string>
+    <string name="reguister_success">Usuario Registrado</string>
+    <string name="dialog_invite">Invitado</string>
 </resources>
