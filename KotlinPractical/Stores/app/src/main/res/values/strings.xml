@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">Stores</string>
+    <string name="app_name">Tiendas</string>
+    <string name="descriptio_img_Photo">Imagen de la tienda</string>
+    <string name="descr5iption_store_add">Crear tienda</string>
 </resources>
