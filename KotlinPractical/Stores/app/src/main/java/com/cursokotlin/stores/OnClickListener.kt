@@ -1,5 +1,7 @@
 package com.cursokotlin.stores
 
 interface OnClickListener {
-    fun onClick(store: Store)
+    fun onClick(storeEntity: StoreEntity)
+    fun onFavoriteStore(storeEntity: StoreEntity)
+    fun onDeleteStore(storeEntity: StoreEntity)
 }
