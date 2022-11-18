@@ -2,6 +2,7 @@ package com.cursokotlin.stores
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.GridLayoutManager
 import com.cursokotlin.stores.databinding.ActivityMainBinding
 import org.jetbrains.anko.doAsync
@@ -20,7 +21,7 @@ class MainActivity : AppCompatActivity(), OnClickListener {
         mBinding= ActivityMainBinding.inflate(layoutInflater)
         setContentView(mBinding.root)
 
-        mBinding.btnSave.setOnClickListener {
+        /*mBinding.btnSave.setOnClickListener {
             val store = StoreEntity(name = mBinding.etName.text.toString().trim())
 
             Thread {
@@ -28,11 +29,25 @@ class MainActivity : AppCompatActivity(), OnClickListener {
             }.start()
 
             mAdapter.add(store)
-        }
+        }*/
+
+        mBinding.fab.setOnClickListener{ launchEditFragment() }
 
         setupRecyclerView()
     }
 
+    private fun launchEditFragment() {
+        val fragment= EditStoreFragment()
+
+        val fragmentManager= supportFragmentManager
+        val fragmentTransaction=fragmentManager.beginTransaction()
+
+        fragmentTransaction.add(R.id.containerMain, fragment)
+        fragmentTransaction.addToBackStack(null)
+        fragmentTransaction.commit()
+
+        mBinding.fab.hide()
+    }
 
 
     private fun setupRecyclerView() {
