@@ -21,16 +21,6 @@ class MainActivity : AppCompatActivity(), OnClickListener, MainAux {
         mBinding= ActivityMainBinding.inflate(layoutInflater)
         setContentView(mBinding.root)
 
-        /*mBinding.btnSave.setOnClickListener {
-            val store = StoreEntity(name = mBinding.etName.text.toString().trim())
-
-            Thread {
-                StoreApplication.database.storeDao().addStore(store)
-            }.start()
-
-            mAdapter.add(store)
-        }*/
-
         mBinding.fab.setOnClickListener{ launchEditFragment() }
 
         setupRecyclerView()
@@ -88,7 +78,7 @@ class MainActivity : AppCompatActivity(), OnClickListener, MainAux {
         doAsync {
             StoreApplication.database.storeDao().updateStore(storeEntity)
             uiThread {
-                mAdapter.update(storeEntity)
+                updateStore(storeEntity)
             }
         }
     }

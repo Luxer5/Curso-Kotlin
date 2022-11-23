@@ -45,20 +45,36 @@ class EditStoreFragment : Fragment() {
             mStoreEntity = StoreEntity(name= "", phone= "", photoUrl = "")
         }
 
+        setupActionBar()
+        setupTextFields()
+    }
+
+    private fun setupActionBar() {
         mActivity= activity as? MainActivity
         mActivity?.supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        mActivity?.supportActionBar?.title= getString(R.string.edit_store_title_add)
+        mActivity?.supportActionBar?.title= if (mIsEditMode) getString(R.string.edit_store_title_edit)
+                                            else getString(R.string.edit_store_title_add)
 
         setHasOptionsMenu(true)
+    }
 
-        mBinding.etPhotoUrl.addTextChangedListener {
-            Glide.with(this)
-                .load(mBinding.etPhotoUrl.text.toString())
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .centerCrop()
-                .into(mBinding.imgPhoto)
-
+    private fun setupTextFields() {
+        with(mBinding){
+            etName.addTextChangedListener { validatefields(tilName) }
+            etPhone.addTextChangedListener { validatefields(tilPhone) }
+            etPhotoUrl.addTextChangedListener {
+                validatefields(tilPhotoUrl)
+                loadImage(it.toString().trim())
+            }
         }
+    }
+
+    private fun loadImage(url: String){
+        Glide.with(this)
+            .load(url)
+            .diskCacheStrategy(DiskCacheStrategy.ALL)
+            .centerCrop()
+            .into(mBinding.imgPhoto)
     }
 
     private fun getStore(id: Long) {
@@ -145,7 +161,7 @@ class EditStoreFragment : Fragment() {
             if (textfield.editText?.text.toString().trim().isEmpty()){
                 textfield.error= getString(R.string.helper_required)
                 isValid = false
-            }
+            } else textfield.error= null
         }
 
         if (!isValid)  Snackbar.make(mBinding.root, R.string.edit_store_message_valid, Snackbar.LENGTH_SHORT).show()
