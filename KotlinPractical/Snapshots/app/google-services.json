@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "937318214881",
+    "project_id": "sanpshots-66b0a",
+    "storage_bucket": "sanpshots-66b0a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:937318214881:android:bbb1d27b8d5861c88b1ba0",
+        "android_client_info": {
+          "package_name": "com.cursokotlin.snapshots"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "937318214881-ac4gfc32ijsdatpsn2ksa3mbdiek93l9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD65L1ziH0338BgBKSae3r3XakD0wPDVE4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "937318214881-ac4gfc32ijsdatpsn2ksa3mbdiek93l9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
