@@ -49,7 +49,7 @@ class MainActivity : AppCompatActivity(), OnClickListener, MainAux {
 
     private fun setupRecyclerView() {
         mAdapter= StoreAdapter(mutableListOf(), this)
-        mGridLayout= GridLayoutManager(this, 2)
+        mGridLayout= GridLayoutManager(this, resources.getInteger(R.integer.main_columns))
         getStores()
 
         mBinding.recyclerView.apply {
@@ -90,7 +90,7 @@ class MainActivity : AppCompatActivity(), OnClickListener, MainAux {
     }
 
     override fun onDeleteStore(storeEntity: StoreEntity) {
-        val items = arrayOf("Eliminar", "Llamar", "Ir al sitio web")
+        val items = resources.getStringArray(R.array.array_options_item)
 
         MaterialAlertDialogBuilder(this)
             .setTitle(R.string.dialog_options_title)
@@ -128,8 +128,7 @@ class MainActivity : AppCompatActivity(), OnClickListener, MainAux {
             action = Intent.ACTION_DIAL
             data = Uri.parse("tel: $phone")
         }
-
-        startActivity(callIntent)
+       startIntent(callIntent)
     }
 
     private fun goToWebsite(website: String){
@@ -140,9 +139,15 @@ class MainActivity : AppCompatActivity(), OnClickListener, MainAux {
                 action = Intent.ACTION_VIEW
                 data = Uri.parse(website)
             }
-
-            startActivity(websiteIntent)
+           startIntent(websiteIntent)
         }
+    }
+
+    private fun startIntent (intent:Intent){
+        if (intent.resolveActivity(packageManager)!= null)
+            startActivity(intent)
+        else
+            Toast.makeText(this, R.string.main_error_no_resolve, Toast.LENGTH_LONG).show()
     }
 
     /*

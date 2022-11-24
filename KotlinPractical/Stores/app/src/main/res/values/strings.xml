@@ -1,24 +1,35 @@
 <resources>
-    <string name="app_name">Tiendas</string>
-    <string name="descriptio_img_Photo">Imagen de la tienda</string>
-    <string name="descr5iption_store_add">Crear tienda</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="hint_name">Nombre de la tienda</string>
-    <string name="helper_required">Requerido</string>
-    <string name="hint_phone">Telefono</string>
-    <string name="hint_website">url del sitio web</string>
-    <string name="hint_name_url">url de la imagen</string>
-    <string name="edit_store_title_add">Crear Tienda</string>
+    <string name="app_name">Stores</string>
+
+    <string name="arg_id" translatable="false">key_id</string>
+
+    <string name="dialog_delete_title">¿Delete Store?</string>
+    <string name="dialog_delete_confirm">Delete</string>
+    <string name="dialog_delete_cancel">Cancel</string>
+    <string name="dialog_options_title">¿What would you like to do?</string>
+
+    <string name="descriptio_img_Photo">Shop Image</string>
+    <string name="descr5iption_store_add">Create shop</string>
+
+    <string name="edit_store_title_edit">Edit Store</string>
+    <string name="edit_store_message_update_success">Shop uploaded</string>
+    <string name="edit_store_message_valid">Revise the selected fields</string>
+    <string name="edit_store_message_save_success">Shop added successfully</string>
+    <string name="edit_store_title_add">Create shop</string>
+
+
+    <string name="hint_name">Shop Name</string>
+    <string name="hint_phone">Phone</string>
+    <string name="hint_website">Website Url</string>
+    <string name="hint_name_url">Image Url</string>
+
+    <string name="helper_required">Required</string>
+
     <string name="menu_save">Save</string>
-    <string name="edit_store_message_save_success">Tienda agregada correctamente</string>
-    <string name="arg_id">key_id</string>
-    <string name="edit_store_message_update_success">Tienda Actualizada</string>
-    <string name="edit_store_message_valid">Re4vise los campos requeridos</string>
-    <string name="edit_store_title_edit">Editar tienda</string>
-    <string name="dialog_delete_title">¿Eliminar tienda?</string>
-    <string name="dialog_delete_confirm">Eliminar</string>
-    <string name="dialog_delete_cancel">Cancelar</string>
-    <string name="dialog_options_title">¿Que desea hacer?</string>
-    <string name="main_error_no_website">Esta tienda tiene la URL vacia</string>
+
+    <string name="main_error_no_website">This shop has empty url</string>
+    <string name="main_error_no_resolve">Not  compatible app found</string>
+
+    <string name="options_item_call">Call</string>
+    <string name="options_item_website">Go to website</string>
 </resources>
