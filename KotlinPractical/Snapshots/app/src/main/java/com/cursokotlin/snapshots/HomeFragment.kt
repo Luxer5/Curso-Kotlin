@@ -1,5 +1,6 @@
 package com.cursokotlin.snapshots
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -67,9 +68,11 @@ class HomeFragment : Fragment() {
                 }
             }
 
+            @SuppressLint("NotifyDataSetChanged") //error interno firebase ui version 8.0.2
             override fun onDataChanged() {
                 super.onDataChanged()
                 mBinding.progressBar.visibility = View.GONE
+                notifyDataSetChanged()
             }
 
             override fun onError(error: DatabaseError) {
