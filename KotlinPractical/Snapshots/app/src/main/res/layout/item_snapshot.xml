@@ -14,7 +14,7 @@
         android:layout_marginTop="@dimen/coomon_padding_default"
         android:layout_marginEnd="@dimen/coomon_padding_default"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@id/imgPhoto"/>
 
     <TextView
         android:id="@+id/tvTitle"
@@ -22,11 +22,12 @@
         android:layout_height="wrap_content"
         android:textAppearance="?attr/textAppearanceSubtitle2"
         tools:text="titulo de la instancia"
+        android:layout_marginTop="@dimen/coomon_padding_min"
         android:layout_marginHorizontal="@dimen/coomon_padding_default"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="@id/btnDelete"
-        app:layout_constraintTop_toTopOf="@id/btnDelete"
-        app:layout_constraintBottom_toBottomOf="@id/btnDelete"/>
+        app:layout_constraintTop_toTopOf="parent"
+        />
 
     <com.google.android.material.checkbox.MaterialCheckBox
         android:id="@+id/cbLike"
@@ -46,7 +47,7 @@
         app:layout_constraintDimensionRatio="H,4:3"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btnDelete"
+        app:layout_constraintTop_toBottomOf="@id/tvTitle"
         app:layout_constraintBottom_toTopOf="@id/cbLike"/>
 
 
