@@ -1,6 +1,7 @@
 package com.cursokotlin.snapshots
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -9,6 +10,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
+import androidx.activity.result.contract.ActivityResultContracts
 import com.cursokotlin.snapshots.databinding.FragmentAddBinding
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
@@ -19,7 +22,7 @@ import com.google.firebase.storage.StorageReference
 
 class AddFragment : Fragment() {
 
-    private val RC_GALLERY = 18
+    //private val RC_GALLERY = 18
     private val PATH_SNAPSHOT = "snapshots"
 
     private lateinit var mBinding: FragmentAddBinding
@@ -28,10 +31,24 @@ class AddFragment : Fragment() {
 
     private var mPhotoSelectedUri: Uri? = null
 
+    private val galleryResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
+        if (it.resultCode == Activity.RESULT_OK){
+
+                mPhotoSelectedUri = it.data?.data
+
+                with(mBinding){
+                    imgPhoto.setImageURI(mPhotoSelectedUri)
+                    tilTitle.visibility= View.VISIBLE
+                    tvMessage.text = getString(R.string.post_message_valid_title)
+                }
+
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         mBinding = FragmentAddBinding.inflate(inflater, container, false)
         return mBinding.root
     }
@@ -49,7 +66,7 @@ class AddFragment : Fragment() {
 
     private fun openGallery() {
         val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-        startActivityForResult(intent, RC_GALLERY)
+        galleryResult.launch(intent)
     }
 
     private fun postSnapshot() {
@@ -63,6 +80,7 @@ class AddFragment : Fragment() {
                     val progress = (100 * it.bytesTransferred/it.totalByteCount).toDouble()
                     mBinding.progressBar.progress= progress.toInt()
                     mBinding.tvMessage.text = "$progress%"
+                    hideKeyboard()
                 }
                 .addOnCompleteListener{
                     mBinding.progressBar.visibility = View.INVISIBLE
@@ -88,16 +106,9 @@ class AddFragment : Fragment() {
         mDatabaseReference.child(key). setValue(snapshot)
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK){
-            if (requestCode == RC_GALLERY){
-                mPhotoSelectedUri = data?.data
-                mBinding.imgPhoto.setImageURI(mPhotoSelectedUri)
-                mBinding.tilTitle.visibility= View.VISIBLE
-                mBinding.tvMessage.text = getString(R.string.post_message_valid_title)
-            }
-        }
+    private fun hideKeyboard(){
+        val imm= context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(requireView().windowToken, 0)
     }
 
 

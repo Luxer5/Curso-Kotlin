@@ -8,7 +8,10 @@ import android.view.ViewGroup
 import android.widget.Toast
 import com.cursokotlin.snapshots.databinding.FragmentProfileBinding
 import com.firebase.ui.auth.AuthUI
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 
 class ProfileFragment : Fragment() {
 
@@ -17,7 +20,7 @@ class ProfileFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         mBinding = FragmentProfileBinding.inflate(inflater, container, false)
         return mBinding.root
     }
@@ -25,10 +28,25 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        mBinding.tvName.text = FirebaseAuth.getInstance().currentUser?.displayName
-        mBinding.tvEmail.text = FirebaseAuth.getInstance().currentUser?.email
+        //mBinding.tvName.text = FirebaseAuth.getInstance().currentUser?.displayName
+       // mBinding.tvEmail.text = FirebaseAuth.getInstance().currentUser?.email
 
-        mBinding.btnLogout.setOnClickListener{signOut()}
+        refresh()
+        setupButton()
+    }
+    private fun setupButton() {
+        mBinding.btnLogout.setOnClickListener {
+            context?.let {
+                MaterialAlertDialogBuilder(it)
+                    .setTitle(R.string.dialog_logout_title)
+                    .setPositiveButton(R.string.dialog_logout_confirm) { _, _ ->
+                        signOut()
+                    }
+
+                    .setNegativeButton(R.string.dialog_logout_cancel, null)
+                    .show()
+            }
+        }
     }
 
     private fun signOut() {
@@ -36,7 +54,17 @@ class ProfileFragment : Fragment() {
             AuthUI.getInstance().signOut(it)
                 .addOnCompleteListener{
                     Toast.makeText(context, "Hasta pronto", Toast.LENGTH_SHORT).show()
+                    mBinding.tvName.text= ""
+                    mBinding.tvEmail.text= ""
+                    (activity?.findViewById(R.id.bottomNav) as? BottomNavigationView)
+                        ?.selectedItemId = R.id.action_home
                 }
+        }
+    }
+    private fun refresh() {
+        with(mBinding) {
+            tvName.text = FirebaseAuth.getInstance().currentUser?.displayName
+            tvEmail.text = FirebaseAuth.getInstance().currentUser?.email
         }
 
     }

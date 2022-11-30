@@ -2,7 +2,6 @@ package com.cursokotlin.snapshots
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.DialogInterface
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -19,9 +18,11 @@ import com.firebase.ui.database.FirebaseRecyclerAdapter
 import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.firebase.ui.database.SnapshotParser
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.storage.FirebaseStorage
 
 class HomeFragment : Fragment() , HomeAux{
 
@@ -33,7 +34,7 @@ class HomeFragment : Fragment() , HomeAux{
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
        mBinding= FragmentHomeBinding.inflate(inflater, container, false)
         return mBinding.root
     }
@@ -44,11 +45,11 @@ class HomeFragment : Fragment() , HomeAux{
         val query = FirebaseDatabase.getInstance().reference.child("snapshots")
 
         val options =
-        FirebaseRecyclerOptions.Builder<Snapshot>().setQuery(query, SnapshotParser {
+        FirebaseRecyclerOptions.Builder<Snapshot>().setQuery(query){
             val snapshot = it.getValue(Snapshot::class.java)
             snapshot!!.id = it.key!!
             snapshot
-        }).build()
+        }.build()
 
 
         mFirebaseAdapter = object : FirebaseRecyclerAdapter<Snapshot, SnapshotHolder>(options){
@@ -120,10 +121,22 @@ class HomeFragment : Fragment() , HomeAux{
     private fun deleteSnapshot(snapshot: Snapshot){
         MaterialAlertDialogBuilder(requireContext())
             .setTitle(R.string.dialog_delete_title)
-            .setPositiveButton(R.string.dialog_delete_confirm, DialogInterface.OnClickListener{ dialogInterface, i ->
+            .setPositiveButton(R.string.dialog_delete_confirm) { _, _ ->
+                val storageSnapshotsRef = FirebaseStorage.getInstance().reference
+                    .child("snapshots")
+                    .child(FirebaseAuth.getInstance().currentUser!!.uid)
+                    .child(snapshot.id)
                 val databaseReference = FirebaseDatabase.getInstance().reference.child("snapshots")
-                databaseReference.child(snapshot.id).removeValue()
-            })
+                storageSnapshotsRef.delete().addOnCompleteListener {
+                    if (it.isSuccessful){
+                        databaseReference.child(snapshot.id).removeValue()
+                    } else{
+                        Snackbar.make(mBinding.root, getString(R.string.home_delete_photo_error),
+                            Snackbar.LENGTH_LONG).show()
+                    }
+                }
+
+            }
             .setNegativeButton(R.string.dialog_delete_cancel, null)
             .show()
 

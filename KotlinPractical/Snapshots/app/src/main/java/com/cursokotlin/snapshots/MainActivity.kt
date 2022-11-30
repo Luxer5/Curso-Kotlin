@@ -1,9 +1,10 @@
 package com.cursokotlin.snapshots
 
-import android.content.Intent
+
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.cursokotlin.snapshots.databinding.ActivityMainBinding
@@ -24,6 +25,18 @@ class MainActivity : AppCompatActivity() {
     private lateinit var mAuthListener: FirebaseAuth.AuthStateListener
     private var mFirebaseAuth: FirebaseAuth? = null
 
+    private var authResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
+        if (it.resultCode == RESULT_OK){
+
+                Toast.makeText(this, "Bienvenido...", Toast.LENGTH_SHORT).show()
+            }else{
+                if(IdpResponse.fromResultIntent(it.data) == null){
+                    finish()
+                }
+
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mBinding = ActivityMainBinding.inflate(layoutInflater)
@@ -39,14 +52,15 @@ class MainActivity : AppCompatActivity() {
         mAuthListener = FirebaseAuth.AuthStateListener {
             val user = it.currentUser
             if (user == null){
-                startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder()
+
+                authResult.launch(AuthUI.getInstance().createSignInIntentBuilder()
                     .setIsSmartLockEnabled(false)
                     .setAvailableProviders(
                         Arrays.asList(
                             AuthUI.IdpConfig.EmailBuilder().build(),
                             AuthUI.IdpConfig.GoogleBuilder().build())
                     )
-                    .build(),RC_SIGN_IN )
+                    .build())
             }
         }
     }
@@ -70,7 +84,7 @@ class MainActivity : AppCompatActivity() {
         mFragmentManager.beginTransaction()
             .add(R.id.hostFragment, homeFragment, HomeFragment::class.java.name).commit()
 
-        mBinding.bottomNav.setOnNavigationItemSelectedListener {
+        mBinding.bottomNav.setOnItemSelectedListener {
             when (it.itemId){
                 R.id.action_home ->{
                     mFragmentManager.beginTransaction().hide(mActiveFragment).show(homeFragment).commit()
@@ -90,7 +104,7 @@ class MainActivity : AppCompatActivity() {
                 else -> false
             }
         }
-        mBinding.bottomNav.setOnNavigationItemReselectedListener{
+        mBinding.bottomNav.setOnItemReselectedListener{
             when(it.itemId){
                 R.id.action_home -> (homeFragment as HomeAux).gotoTop()
             }
@@ -107,16 +121,5 @@ class MainActivity : AppCompatActivity() {
         mFirebaseAuth?.removeAuthStateListener(mAuthListener)
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == RC_SIGN_IN){
-            if (resultCode== RESULT_OK){
-                Toast.makeText(this, "Bienvenido...", Toast.LENGTH_SHORT).show()
-            }else{
-                if(IdpResponse.fromResultIntent(data) == null){
-                    finish()
-                }
-            }
-        }
-    }
+
 }

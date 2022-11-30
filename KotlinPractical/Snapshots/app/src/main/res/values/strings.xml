@@ -10,4 +10,8 @@
     <string name="dialog_delete_cancel">Cancelar</string>
     <string name="dialog_delete_confirm">Confirmar</string>
     <string name="dialog_delete_title">¿Desea eliminar el snapshot?</string>
+    <string name="home_delete_photo_error">Error al eliminar la foto</string>
+    <string name="dialog_logout_title">¿Desea cerrar sesion?</string>
+    <string name="dialog_logout_confirm">Confirmar</string>
+    <string name="dialog_logout_cancel">Cancelar</string>
 </resources>
