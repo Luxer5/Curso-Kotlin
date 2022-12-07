@@ -1,26 +1,17 @@
-package com.cursosant.android.stores.mainModule.model
+package com.cursosant.android.stores.editModule.model
 
 import com.cursosant.android.stores.StoreApplication
 import com.cursosant.android.stores.common.entities.StoreEntity
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 
-class MainInteractor {
+class EditStoreInteractor {
 
-    fun getStores(callback: (MutableList<StoreEntity>)-> Unit){
+    fun saveStore(storeEntity: StoreEntity, callback: (Long) -> Unit){
         doAsync {
-            val storesList = StoreApplication.database.storeDao().getAllStores()
+            val newId = StoreApplication.database.storeDao().addStore(storeEntity)
             uiThread {
-                callback(storesList)
-            }
-        }
-    }
-
-    fun deleteStore(storeEntity: StoreEntity, callback: (StoreEntity) -> Unit){
-        doAsync {
-            StoreApplication.database.storeDao().deleteStore(storeEntity)
-            uiThread {
-                callback(storeEntity)
+                callback(newId)
             }
         }
     }
@@ -33,4 +24,5 @@ class MainInteractor {
             }
         }
     }
+
 }
