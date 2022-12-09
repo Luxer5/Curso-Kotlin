@@ -12,15 +12,14 @@ import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.cursosant.android.stores.R
-import com.cursosant.android.stores.StoreApplication
+
 import com.cursosant.android.stores.common.entities.StoreEntity
 import com.cursosant.android.stores.databinding.FragmentEditStoreBinding
 import com.cursosant.android.stores.editModule.viewModel.EditStoreViewModel
 import com.cursosant.android.stores.mainModule.MainActivity
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputLayout
-import org.jetbrains.anko.doAsync
-import org.jetbrains.anko.uiThread
+
 
 class EditStoreFragment : Fragment() {
 
@@ -30,7 +29,7 @@ class EditStoreFragment : Fragment() {
 
     private var mActivity: MainActivity? = null
     private var mIsEditMode: Boolean = false
-    private var mStoreEntity: StoreEntity? = null
+    private lateinit var mStoreEntity: StoreEntity
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,7 +38,7 @@ class EditStoreFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle? ): View? {
+        savedInstanceState: Bundle? ): View {
         mBinding = FragmentEditStoreBinding.inflate(inflater, container, false)
 
         return mBinding.root
@@ -66,6 +65,30 @@ class EditStoreFragment : Fragment() {
                 mIsEditMode = false
             }
             setupActionBar()
+        }
+
+        mEditStoreViewModel.getResult().observe(viewLifecycleOwner){ result ->
+            hideKeyboard()
+
+            when (result){
+                is Long->{
+                    mStoreEntity.id = result
+
+                    mEditStoreViewModel.setStoreSelected(mStoreEntity)
+
+                    Toast.makeText(mActivity,
+                        R.string.edit_store_message_save_success, Toast.LENGTH_SHORT).show()
+
+                    mActivity?.onBackPressed()
+                }
+                is StoreEntity -> {
+                    mEditStoreViewModel.setStoreSelected(mStoreEntity)
+
+                    Snackbar.make(mBinding.root,
+                        R.string.edit_store_message_update_success,
+                        Snackbar.LENGTH_SHORT).show()
+                }
+            }
         }
     }
 
@@ -120,40 +143,17 @@ class EditStoreFragment : Fragment() {
                 true
             }
             R.id.action_save -> {
-                if (mStoreEntity != null &&
-                        validateFields(mBinding.tilPhotoUrl, mBinding.tilPhone, mBinding.tilName)){
-                    with(mStoreEntity!!){
+                if (validateFields(mBinding.tilPhotoUrl, mBinding.tilPhone, mBinding.tilName)){
+                    with(mStoreEntity){
                         name = mBinding.etName.text.toString().trim()
                         phone = mBinding.etPhone.text.toString().trim()
                         website = mBinding.etWebsite.text.toString().trim()
                         photoUrl = mBinding.etPhotoUrl.text.toString().trim()
                     }
 
-                    doAsync {
-                        if (mIsEditMode) StoreApplication.database.storeDao().updateStore(mStoreEntity!!)
-                        else mStoreEntity!!.id = StoreApplication.database.storeDao().addStore(mStoreEntity!!)
 
-                        uiThread {
-
-                            hideKeyboard()
-
-                            if (mIsEditMode){
-                                // FIXME: ViewModel  
-                                //mActivity?.updateStore(mStoreEntity!!)
-
-                                Snackbar.make(mBinding.root,
-                                    R.string.edit_store_message_update_success,
-                                        Snackbar.LENGTH_SHORT).show()
-                            } else {
-                                //mActivity?.addStore(mStoreEntity!!)
-
-                                Toast.makeText(mActivity,
-                                    R.string.edit_store_message_save_success, Toast.LENGTH_SHORT).show()
-
-                                mActivity?.onBackPressed()
-                            }
-                        }
-                    }
+                    if (mIsEditMode) mEditStoreViewModel.updateStore(mStoreEntity)
+                    else mEditStoreViewModel.saveStore(mStoreEntity)
                 }
                 true
             }
@@ -218,6 +218,7 @@ class EditStoreFragment : Fragment() {
         mActivity?.supportActionBar?.setDisplayHomeAsUpEnabled(false)
         mActivity?.supportActionBar?.title = getString(R.string.app_name)
         mEditStoreViewModel.setShowFab(true)
+        mEditStoreViewModel.setResult(Any())
 
         setHasOptionsMenu(false)
         super.onDestroy()
