@@ -4,12 +4,12 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.cursosant.android.stores.*
-import com.cursosant.android.stores.common.utils.MainAux
 import com.cursosant.android.stores.common.entities.StoreEntity
 import com.cursosant.android.stores.databinding.ActivityMainBinding
 import com.cursosant.android.stores.editModule.EditStoreFragment
@@ -31,7 +31,6 @@ class MainActivity : AppCompatActivity(), OnClickListener {
     //MVVM
     private lateinit var mMainViewModel: MainViewModel
     private lateinit var mEditStoreViewModel: EditStoreViewModel
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mBinding = ActivityMainBinding.inflate(layoutInflater)
@@ -48,6 +47,10 @@ class MainActivity : AppCompatActivity(), OnClickListener {
         mMainViewModel.getStores().observe(this) { stores->
             mAdapter.setStores(stores)
         }
+        mMainViewModel.isShowProgress().observe(this){ isShowProgress ->
+            mBinding.progressBar.visibility = if (isShowProgress) View.VISIBLE else View.GONE
+        }
+
         mEditStoreViewModel = ViewModelProvider(this).get(EditStoreViewModel::class.java)
         mEditStoreViewModel.getShowFab().observe(this){ isVisible ->
             if (isVisible) mBinding.fab.show() else mBinding.fab.hide()
