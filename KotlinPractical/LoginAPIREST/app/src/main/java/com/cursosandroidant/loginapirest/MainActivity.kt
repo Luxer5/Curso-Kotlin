@@ -5,7 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import com.android.volley.Request
+
 import com.android.volley.toolbox.JsonObjectRequest
 import com.cursosandroidant.loginapirest.databinding.ActivityMainBinding
 import org.json.JSONObject
@@ -40,9 +40,9 @@ class MainActivity : AppCompatActivity() {
             login()
         }
 
-       /* mBinding.btnProfile.setOnClickListener {
+        mBinding.btnProfile.setOnClickListener {
             startActivity(Intent(this, ProfileActivity::class.java))
-        }*/
+        }
     }
 
     private fun login() {
@@ -61,7 +61,7 @@ class MainActivity : AppCompatActivity() {
             jsonParams.put(Constants.PASSWORD_PARAM, password)
         }
 
-        val jsonObjectRequest = object : JsonObjectRequest(Request.Method.POST, url, jsonParams, { response ->
+        val jsonObjectRequest = object : JsonObjectRequest(Method.POST, url, jsonParams, { response ->
             Log.i( "response", response.toString())
 
             val id = response.optString(Constants.ID_PROPERTY, Constants.ERROR_VALUE)

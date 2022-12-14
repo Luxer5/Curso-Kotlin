@@ -11,4 +11,6 @@ package com.cursosandroidant.loginapirest
  * All my Courses(Only on Udemy):
  * https://www.udemy.com/user/alain-nicolas-tello/
  ***/
-data class Support(val url: String, val text: String)
+data class Support(
+    val url: String,
+    val text: String)
