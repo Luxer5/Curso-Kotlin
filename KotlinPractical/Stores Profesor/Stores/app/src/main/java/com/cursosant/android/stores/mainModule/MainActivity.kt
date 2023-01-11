@@ -16,6 +16,7 @@ import com.cursosant.android.stores.editModule.EditStoreFragment
 import com.cursosant.android.stores.editModule.viewModel.EditStoreViewModel
 import com.cursosant.android.stores.mainModule.adapters.OnClickListener
 import com.cursosant.android.stores.mainModule.adapters.StoreAdapter
+import com.cursosant.android.stores.mainModule.adapters.StoreListAdapter
 import com.cursosant.android.stores.mainModule.viewModel.MainViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.jetbrains.anko.doAsync
@@ -25,7 +26,7 @@ class MainActivity : AppCompatActivity(), OnClickListener {
 
     private lateinit var mBinding: ActivityMainBinding
 
-    private lateinit var mAdapter: StoreAdapter
+    private lateinit var mAdapter: StoreListAdapter
     private lateinit var mGridLayout: GridLayoutManager
 
     //MVVM
@@ -45,7 +46,8 @@ class MainActivity : AppCompatActivity(), OnClickListener {
     private fun setupViewModel() {
         mMainViewModel = ViewModelProvider(this).get(MainViewModel::class.java)
         mMainViewModel.getStores().observe(this) { stores->
-            mAdapter.setStores(stores)
+            mBinding.progressBar.visibility = View.GONE
+           mAdapter.submitList(stores)
         }
         mMainViewModel.isShowProgress().observe(this){ isShowProgress ->
             mBinding.progressBar.visibility = if (isShowProgress) View.VISIBLE else View.GONE
@@ -54,9 +56,6 @@ class MainActivity : AppCompatActivity(), OnClickListener {
         mEditStoreViewModel = ViewModelProvider(this).get(EditStoreViewModel::class.java)
         mEditStoreViewModel.getShowFab().observe(this){ isVisible ->
             if (isVisible) mBinding.fab.show() else mBinding.fab.hide()
-        }
-        mEditStoreViewModel.getStoreSelected().observe(this) { storeEntity ->
-            mAdapter.add(storeEntity)
         }
     }
 
@@ -75,7 +74,7 @@ class MainActivity : AppCompatActivity(), OnClickListener {
     }
 
     private fun setupRecylcerView() {
-        mAdapter = StoreAdapter(mutableListOf(), this)
+        mAdapter = StoreListAdapter(this)
         mGridLayout = GridLayoutManager(this, resources.getInteger(R.integer.main_columns))
 
         mBinding.recyclerView.apply {

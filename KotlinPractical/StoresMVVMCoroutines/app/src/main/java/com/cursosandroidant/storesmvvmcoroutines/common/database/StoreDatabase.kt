@@ -1,0 +1,21 @@
+package com.cursosandroidant.storesmvvmcoroutines.common.database
+
+import androidx.room.Database
+import androidx.room.RoomDatabase
+import com.cursosandroidant.storesmvvmcoroutines.common.entities.StoreEntity
+
+/****
+ * Project: Stores Coroutines
+ * From: com.cursosandroidant.storesmvvmcoroutines
+ * Created by Alain Nicolás Tello on 09/02/22 at 12:34 PM
+ * Course: Android Practical with Kotlin from zero.
+ * Only on: https://www.udemy.com/course/kotlin-intensivo/
+ * All rights reserved 2021.
+ * My website: www.alainnicolastello.com
+ * All my Courses(Only on Udemy):
+ * https://www.udemy.com/user/alain-nicolas-tello/
+ ***/
+@Database(entities = [StoreEntity::class], version = 3)
+abstract class StoreDatabase : RoomDatabase() {
+    abstract fun storeDao(): StoreDao
+}

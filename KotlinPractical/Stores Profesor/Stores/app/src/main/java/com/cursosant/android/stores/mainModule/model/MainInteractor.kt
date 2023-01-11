@@ -1,6 +1,9 @@
 package com.cursosant.android.stores.mainModule.model
 
 import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.liveData
+import androidx.lifecycle.map
 import com.android.volley.Request
 import com.android.volley.toolbox.JsonObjectRequest
 import com.cursosant.android.stores.StoreApplication
@@ -13,7 +16,18 @@ import org.jetbrains.anko.uiThread
 
 class MainInteractor {
 
-    fun getStores(callback: (MutableList<StoreEntity>) -> Unit){
+    /*fun getStores (callback: (MutableList<StoreEntity>) -> Unit){
+        //isLocal nos ayuda a cambiar entre la fuente donde consultemos los datos
+        val isLocal = true
+        if(isLocal) {
+            getStoresRoom { storeList -> callback(storeList) }
+        }else {
+            getStoresAPI { storesList -> callback(storesList)}
+        }
+
+    }*/
+
+    /*fun getStoresAPI(callback: (MutableList<StoreEntity>) -> Unit){
 
         val url = Constants.STORES_URL + Constants.GET_ALL_PATH
 
@@ -45,17 +59,26 @@ class MainInteractor {
         })
 
         StoreApplication.storeAPI.addToRequestQueue(jsonObjectRequest)
-    }
+    }*/
 
-    fun getStoresRoom(callback: (MutableList<StoreEntity>)-> Unit){
+    /*fun getStoresRoom(callback: (MutableList<StoreEntity>)-> Unit){
         doAsync {
-            val storesList = StoreApplication.database.storeDao().getAllStores()
+            val storeList = StoreApplication.database.storeDao().getAllStores()
             uiThread {
-                val json = Gson().toJson(storesList)
+                val json = Gson().toJson(storeList)
                 Log.i("Gson", json)
-                callback(storesList)
+                callback(storeList)
             }
         }
+    }*/
+
+    val stores: LiveData<MutableList<StoreEntity >> = liveData {
+        kotlinx.coroutines.delay(1_000) //temporal para pruebas
+        val storesLiveData = StoreApplication.database.storeDao().getAllStores()
+        emitSource(storesLiveData.map { stores ->
+            stores.sortedBy { it.name }.toMutableList()
+        })
+
     }
 
     fun deleteStore(storeEntity: StoreEntity, callback: (StoreEntity) -> Unit){
@@ -67,12 +90,8 @@ class MainInteractor {
         }
     }
 
-    fun updateStore(storeEntity: StoreEntity, callback: (StoreEntity) -> Unit){
-        doAsync {
-            StoreApplication.database.storeDao().updateStore(storeEntity)
-            uiThread {
-                callback(storeEntity)
-            }
-        }
+    suspend fun updateStore(storeEntity: StoreEntity){
+        StoreApplication.database.storeDao().updateStore(storeEntity)
+
     }
 }

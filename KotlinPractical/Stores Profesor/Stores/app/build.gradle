@@ -56,12 +56,22 @@ dependencies {
     //GSON
     implementation 'com.google.code.gson:gson:2.10'
 
+    //Coroutines
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
+
     // ViewModel
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
+
+    //Livedata
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.4.0'
+
 
     implementation "androidx.room:room-runtime:$room_version"
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     kapt "androidx.room:room-compiler:$room_version"
+
+    // optional - Kotlin Extensions and Coroutines support for Room
+    implementation "androidx.room:room-ktx:$room_version"
 
     // Anko Commons
     implementation "org.jetbrains.anko:anko-commons:$anko_version"
