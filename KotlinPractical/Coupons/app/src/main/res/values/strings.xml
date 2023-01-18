@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Coupons</string>
+    <string name="main_button_consult">Consultar</string>
+    <string name="main_button_create">Crear cupón</string>
+    <string name="name_text_title">Bienvenido, ingrese su cupón y a continuación presione en consultar</string>
+    <string name="main_hint_coupon">cupón</string>
+    <string name="main_hint_description">Descripcion</string>
+    <string name="error_unique_code">Error desconocido al crear cupón</string>
+    <string name="error_invalid_length">El cupon debe tener entre 5 y 10 caracteres</string>
+    <string name="error_unknow">Error desconocido al crear cupon</string>
+</resources>
