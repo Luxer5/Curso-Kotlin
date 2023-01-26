@@ -94,7 +94,7 @@ class MainActivity : AppCompatActivity(), OnClickListener, MainAux {
 
         MaterialAlertDialogBuilder(this)
             .setTitle(R.string.dialog_options_title)
-            .setItems(items, {dialogInterface, i ->
+            .setItems(items) { _, i ->
                 when (i){
                     0 -> confirmDelete(storeEntity)
 
@@ -103,7 +103,7 @@ class MainActivity : AppCompatActivity(), OnClickListener, MainAux {
                     2 -> goToWebsite(storeEntity.website)
                 }
             }
-            )
+
             .show()
 
     }
