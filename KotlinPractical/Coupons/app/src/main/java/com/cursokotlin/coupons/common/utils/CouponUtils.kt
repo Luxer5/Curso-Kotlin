@@ -7,7 +7,7 @@ import com.cursokotlin.coupons.R
 
 
 fun validateTextCode (code: String): Boolean{
-    return !(code.length < 5 || code.length < 10)
+    return !(code.length < 5 || code.length > 10)
 }
 
 fun getMsgErrorByCode(errorCode: String?): Int = when(errorCode){
