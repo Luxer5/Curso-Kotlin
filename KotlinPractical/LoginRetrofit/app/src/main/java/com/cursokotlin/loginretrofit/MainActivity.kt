@@ -3,10 +3,18 @@ package com.cursokotlin.loginretrofit
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.View
+import androidx.lifecycle.lifecycleScope
 import com.cursokotlin.loginretrofit.databinding.ActivityMainBinding
-import org.json.JSONObject
+import com.cursokotlin.loginretrofit.retrofit.LoginService
+import com.cursokotlin.loginretrofit.retrofit.UserInfo
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import retrofit2.HttpException
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+
 /****
  * Project: Login API REST
  * From: com.cursosandroidant.loginapirest
@@ -35,7 +43,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         mBinding.btnLogin.setOnClickListener {
-            login()
+            loginOrRegister()
         }
 
         mBinding.btnProfile.setOnClickListener {
@@ -43,49 +51,87 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun login() {
-        val typeMethod= if (mBinding.swType.isChecked) Constants.LOGIN_PATH else  Constants.REGISTER_PATH
-
-        val url = Constants.BASE_URL + Constants.API_PATH + typeMethod
+    private fun loginOrRegister(){
 
         val email = mBinding.etEmail.text.toString().trim()
         val password = mBinding.etPassword.text.toString().trim()
+        val retrofit = Retrofit.Builder()
+            .baseUrl(Constants.BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+        val service = retrofit.create(LoginService::class.java)
 
-        val jsonParams = JSONObject()
-        if (email.isNotEmpty()){
-            jsonParams.put(Constants.EMAIL_PARAM, email)
-        }
-        if (password.isNotEmpty()){
-            jsonParams.put(Constants.PASSWORD_PARAM, password)
-        }
-
-        /*val jsonObjectRequest = object : JsonObjectRequest(Method.POST, url, jsonParams, { response ->
-            Log.i( "response", response.toString())
-
-            val id = response.optString(Constants.ID_PROPERTY, Constants.ERROR_VALUE)
-            val token = response.optString(Constants.TOKEN_PROPERTY, Constants.ERROR_VALUE)
-
-            val result = if(id.equals(Constants.ERROR_VALUE)) "${Constants.TOKEN_PROPERTY}: $token"
-                else "${Constants.ID_PROPERTY}: $id, ${Constants.TOKEN_PROPERTY}: $token"
-
-            updateUI(result)
-
-        },{
-            it.printStackTrace()
-            if(it.networkResponse.statusCode == 400)
-                updateUI(getString(R.string.main_error_server))
-        }){
-            override fun getHeaders(): MutableMap<String, String> {
-                val params = HashMap<String, String>()
-
-                params["Content-Type"] = "application/json"
-                return params
-            }
-        }
-        LoginApplication.reqResAPI.addToRequestQueue(jsonObjectRequest)*/
+        if (mBinding.swType.isChecked) login(email, password, service)
+        else register(email, password,service)
     }
 
-    private fun updateUI(result: String) {
+    private fun login(email: String, password: String, service: LoginService) {
+
+        lifecycleScope.launch(Dispatchers.IO){
+            try {
+                val result = service.loginUser(UserInfo(email, password))
+                updateUI("${Constants.TOKEN_PROPERTY}: ${result.token}")
+
+            }catch (e: Exception){
+                (e as? HttpException)?.let {
+                    checkError(e)
+                }
+            }
+        }
+
+        /*service.login(UserInfo(email, password)).enqueue(
+            object : Callback<LoginResponse>{
+                override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse> ) {
+                    when (response.code()){
+                        200 -> {
+                            val result = response.body()
+
+                            updateUI("${Constants.TOKEN_PROPERTY}: ${result?.token}")
+                        }
+                        400 -> {
+                            updateUI(getString(R.string.main_error_server))
+                        }
+                        else -> {
+                            updateUI(getString(R.string.main_error_response))
+                        }
+                    }
+
+                }
+
+                override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
+                    Log.e("Retrofit", "Problemas con el servidor.")
+                }
+            }
+        )*/
+    }
+
+    private suspend fun checkError(e: HttpException) = when (e.code()){
+
+        400 -> {
+            updateUI(getString(R.string.main_error_server))
+        }
+        else -> {
+            updateUI(getString(R.string.main_error_response))
+        }
+    }
+
+
+
+    private fun register(email: String, password: String, service: LoginService){
+
+        lifecycleScope.launch(Dispatchers.IO){
+            try {
+                val result = service.registerUser(UserInfo(email, password))
+                updateUI("${Constants.ID_PROPERTY}: ${result.id}," +
+                        " ${Constants.TOKEN_PROPERTY}: ${result.token}")
+            }catch (e: Exception){
+                (e as? HttpException)?.let { checkError(e) }
+            }
+        }
+    }
+
+
+    private suspend fun updateUI(result: String) = withContext(Dispatchers.Main){
         mBinding.tvResult.visibility = View.VISIBLE
         mBinding.tvResult.text = result
     }
