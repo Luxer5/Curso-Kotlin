@@ -16,7 +16,7 @@ import org.jetbrains.anko.uiThread
 
 class MainActivity : AppCompatActivity(), OnClickListener, MainAux {
 
-    private lateinit var mBinding:ActivityMainBinding
+    private lateinit var mBinding: ActivityMainBinding
 
     private lateinit var mAdapter: StoreAdapter
     private lateinit var mGridLayout: GridLayoutManager
