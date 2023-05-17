@@ -2,17 +2,25 @@ package com.cursokotlin.coupons.common.utils
 
 import org.junit.Assert.*
 import org.junit.Test
+<<<<<<< HEAD
 import com.cursokotlin.coupons.R
 import com.cursokotlin.coupons.common.entities.CouponEntity
+=======
+>>>>>>> 72478c1 (tests)
 
 class CouponUtilsKtTest{
     @Test
     fun validateTextCodeSuccessTest(){
+<<<<<<< HEAD
         val code = "Welcome"
+=======
+        var code = "WELCOME"
+>>>>>>> 72478c1 (tests)
         assertTrue(validateTextCode(code))
     }
     @Test
     fun validateTextCodeEmptyFailTest(){
+<<<<<<< HEAD
         val code = ""
         assertFalse(validateTextCode(code))
     }
@@ -73,5 +81,23 @@ class CouponUtilsKtTest{
         val bNames = arrayOf("Alain", "Daniela", "Mary") // Valor esperado;
         assertNotEquals("Los arreglos no deberian coincidir, revise sus elementos. ",
             bNames, aNames)
+=======
+        var code = ""
+        assertFalse(validateTextCode(code))
+    }
+    @Test
+    fun validateTextCodeMinLengthTest(){
+        var code = "hola"
+        //val code2 = "hola2"
+        assertFalse(validateTextCode(code))
+        //assertTrue(validateTextCode(code2))
+    }
+    @Test
+    fun validateTextCodeMaxLengthTest(){
+        //var code = "Hola567890"
+        val code2 = "Hola5678901"
+        assertFalse(validateTextCode(code2))
+        //assertTrue(validateTextCode(code))
+>>>>>>> 72478c1 (tests)
     }
 }
